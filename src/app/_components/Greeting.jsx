@@ -15,10 +15,10 @@ const Greeting = () => {
     <div className="absolute top-0 left-0 p-5">
       <h1 className="text-lg font-light text-black">Hello {name}</h1>
       <p className="text-sm font-normal pb-2 text-black">{date}</p>
-      <p className="text-sm italic text-gray-400">
+      <p className="text-sm italic text-gray-600">
         This is a place for your inspirational quote.
       </p>
-      <p className="text-sm text-gray-400">Author</p>
+      <p className="text-sm text-gray-600">Author</p>
     </div>
   );
 };
