@@ -1,25 +1,84 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { IoTrashOutline } from "react-icons/io5";
 
-const EditFields = ({ text, onSave, id }) => {
-  const [editText, setEditText] = useState(text); // Initialize with passed text
-  const [daysActive, setDaysActive] = useState({
-    Sun: false,
-    Mon: false,
-    Tue: false,
-    Wed: false,
-    Thu: false,
-    Fri: false,
-    Sat: false,
-  });
+const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
+  const [editText, setEditText] = useState(task.title || "");
+  const [description, setDescription] = useState(task.description || "");
+
+  // Function to create initial daysActive state from task.days_active
+  const createInitialDaysActive = (activeDays) => {
+    const days = {
+      Sun: false,
+      Mon: false,
+      Tue: false,
+      Wed: false,
+      Thu: false,
+      Fri: false,
+      Sat: false,
+    };
+    activeDays.forEach((day) => {
+      if (days.hasOwnProperty(day)) {
+        days[day] = true;
+      }
+    });
+    return days;
+  };
+
+  const [daysActive, setDaysActive] = useState(
+    createInitialDaysActive(task.days_active)
+  );
+
   const toggleDay = (day) => {
     setDaysActive((prev) => ({ ...prev, [day]: !prev[day] }));
   };
-  const handleSaveEdit = () => {
-    onSave(id, editText); // Pass the ID and new text back to the parent component
+
+  const hasChanges = () => {
+    const initialDaysActive = createInitialDaysActive(task.days_active);
+    const daysChanged = Object.keys(daysActive).some(
+      (day) => daysActive[day] !== initialDaysActive[day]
+    );
+    return (
+      editText !== task.title || description !== task.description || daysChanged
+    );
   };
 
+  const handleSaveEdit = async () => {
+    if (!hasChanges()) {
+      onExit();
+      return;
+    }
+
+    const activeDays = Object.entries(daysActive)
+      .filter(([_, isActive]) => isActive)
+      .map(([day, _]) => day);
+
+    try {
+      const response = await axios.put(
+        `http://127.0.0.1:8000/users/${userId}/todos/${todoId}`,
+        {
+          title: editText,
+          description,
+          days_active: activeDays,
+        }
+      );
+      onSave(response.data); // Assuming onSave will handle the response data
+    } catch (error) {
+      console.error("Error updating todo:", error);
+    }
+  };
+  const handleDeleteTodo = async () => {
+    try {
+      await axios.delete(
+        `http://127.0.0.1:8000/users/${userId}/todos/${todoId}`
+      );
+      onExit();
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
+  };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-25 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-25 flex justify-center z-[999] items-center">
       <div className="bg-[#f4e9da] text-center p-6 rounded-lg shadow-lg transition-transform transform border-black-300 scale-95 animate-scale-in">
         <input
           type="text"
@@ -29,19 +88,16 @@ const EditFields = ({ text, onSave, id }) => {
         />
 
         <div className="mt-4">
-          <div className="text-black text-start text-sm">
-            Longest streak: 24 times
-          </div>
-          <div className="text-left text-black text-sm pt-4 ">
+          <div className="text-left text-black text-sm pt-4">
             On Which Days?
           </div>
           <div className="flex justify-center space-x-2 mt-2 pb-8">
-            {Object.entries(daysActive).map(([day, isActive]) => (
+            {Object.keys(daysActive).map((day) => (
               <button
                 key={day}
                 onClick={() => toggleDay(day)}
                 className={`h-10 w-10 rounded-full text-white ${
-                  isActive ? "bg-emerald-800" : "bg-gray-300"
+                  daysActive[day] ? "bg-emerald-800" : "bg-gray-300"
                 } flex items-center justify-center text-xs`}
               >
                 {day}
@@ -60,17 +116,27 @@ const EditFields = ({ text, onSave, id }) => {
           <textarea
             id="description"
             rows="4"
-            className="mt-1 block text-black w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
             placeholder="Add important details..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
 
-        <button
-          onClick={handleSaveEdit}
-          className="mt-4 bg-green-700 hover:bg-green-800 focus:bg-green-800 rounded-3xl text-white font-bold py-2 px-4"
-        >
-          ✓
-        </button>
+        <div className="mt-4 flex flex-col items-center space-y-2">
+          <button
+            onClick={handleSaveEdit}
+            className="bg-green-700 hover:bg-green-800 focus:bg-green-800 rounded-3xl text-white font-bold py-2 px-8"
+          >
+            ✓
+          </button>
+          <button
+            onClick={handleDeleteTodo}
+            className="text-red-600 rounded-3xl font-bold py-2 px-4"
+          >
+            <IoTrashOutline />
+          </button>
+        </div>
       </div>
     </div>
   );

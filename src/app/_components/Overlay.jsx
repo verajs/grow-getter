@@ -9,7 +9,7 @@ const Overlay = ({ onClose, show }) => {
 
   return (
     <div
-      className={`fixed inset-0 bg-[#f4e9da] flex flex-col   p-4 transition-opacity duration-1000 ease-in-out ${
+      className={`fixed inset-0 bg-[#f4e9da] flex flex-col  z-[400] p-4 transition-opacity duration-1000 ease-in-out ${
         show ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       onClick={(e) => e.stopPropagation()}
