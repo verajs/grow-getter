@@ -5,31 +5,30 @@ import { IoTrashOutline } from "react-icons/io5";
 const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
   const [editText, setEditText] = useState(task.title || "");
   const [description, setDescription] = useState(task.description || "");
-  const [averageTimeSpent, setAverageTimeSpent] = useState("N/A"); // State to store average time spent
+  const [averageTimeSpent, setAverageTimeSpent] = useState("N/A"); 
 
   useEffect(() => {
-    // Function to fetch the average time spent
     const fetchAverageTime = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/users/${userId}/todos/${todoId}/completion-time`
+          `http://34.125.43.215:8000/users/${userId}/todos/${todoId}/completion-time`
         );
         if (response.data === null) {
-          setAverageTimeSpent("N/A"); // Set to N/A if there is no data
+          setAverageTimeSpent("N/A");
           return;
         }
 
-        setAverageTimeSpent(response.data); // Set the fetched time
+        setAverageTimeSpent(response.data); 
       } catch (error) {
         console.error("Failed to fetch completion time", error);
-        setAverageTimeSpent("N/A"); // Set to N/A if there is an error
+        setAverageTimeSpent("N/A"); 
       }
     };
 
     fetchAverageTime();
-  }, [userId, todoId]); // Depend on userId and todoId to refetch if they change
+  }, [userId, todoId]); 
 
-  // Function to create initial daysActive state from task.days_active
+  
   const createInitialDaysActive = (activeDays) => {
     const days = {
       Sun: false,
@@ -78,7 +77,7 @@ const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/users/${userId}/todos/${todoId}`,
+        `http://34.125.43.215:8000/users/${userId}/todos/${todoId}`,
         {
           title: editText,
           description,
@@ -93,7 +92,7 @@ const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
   const handleDeleteTodo = async () => {
     try {
       await axios.delete(
-        `http://127.0.0.1:8000/users/${userId}/todos/${todoId}`
+        `http://34.125.43.215:8000/users/${userId}/todos/${todoId}`
       );
       onExit();
     } catch (error) {

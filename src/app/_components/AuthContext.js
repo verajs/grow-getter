@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Initialize from local storage
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     if (token && user) {
@@ -20,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (data) => {
     localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user)); // Persist user data
+    localStorage.setItem('user', JSON.stringify(data.user)); 
     setAuthState({
       user: data.user,
       token: data.token,

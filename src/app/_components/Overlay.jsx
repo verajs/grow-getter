@@ -1,10 +1,9 @@
 import TodoList from "./TodoList";
 
 const Overlay = ({ onClose, show }) => {
-  // This function stops propagation of click events from the button
   const handleButtonClick = (e) => {
-    e.stopPropagation(); // Stop the click event from bubbling up to the overlay
-    onClose(); // Call the onClose function passed as a prop
+    e.stopPropagation(); 
+    onClose(); 
   };
 
   return (

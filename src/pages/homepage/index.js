@@ -4,14 +4,14 @@ import Greeting from "../../app/_components/Greeting";
 import { LuListTodo } from "react-icons/lu";
 import "../../app/globals.css";
 import { useState, useEffect } from "react";
-import { useAuth } from "../../app/_components/AuthContext"; // Assuming you have AuthContext set up
+import { useAuth } from "../../app/_components/AuthContext"; 
 
 import Overlay from "@/components/Overlay";
 export default function Home() {
-  const { user } = useAuth(); // Get user from context
+  const { user } = useAuth();
 
   const [showOverlay, setShowOverlay] = useState(false);
-  const [tree, setTree] = useState(null); // Initialize tree state to null
+  const [tree, setTree] = useState(null); 
 
   const openOverlay = () => {
     setShowOverlay(true);
@@ -22,11 +22,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // Check if there are trees and set the first one
     if (user && user.trees && user.trees.length > 0) {
-      setTree(user.trees[0]); // Safely set the first tree, if it exists
+      setTree(user.trees[0]); 
     }
-  }, [user]); // Depend on the user object to refetch when it changes
+  }, [user]); 
 
   return (
     <div className="relative w-full h-screen bg-[#f4e9da] flex items-end justify-center">

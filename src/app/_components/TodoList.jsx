@@ -30,7 +30,7 @@ const TodoList = () => {
   const fetchTodos = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/users/${user.id}/todos`
+        `http://34.125.43.215:8000/users/${user.id}/todos`
       );
       setTodos(
         response.data.map((todo) => ({ ...todo, isChecked: todo.completed }))
@@ -43,7 +43,7 @@ const TodoList = () => {
     const fetchTodos = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/users/${user.id}/todos`
+          `http://34.125.43.215:8000/users/${user.id}/todos`
         );
         const fetchedTodos = response.data.map((todo) => ({
           ...todo,
@@ -98,13 +98,11 @@ const TodoList = () => {
 
     try {
       const response = await axios.patch(
-        `http://127.0.0.1:8000/users/${user.id}/todos/${todoId}/complete`
+        `http://34.125.43.215:8000/users/${user.id}/todos/${todoId}/complete`
       );
       console.log("Todo updated:", response.data);
-      // Optionally, refresh the todo list here if the backend response differs from the optimistic update
     } catch (error) {
       console.error("Error updating todo:", error);
-      // Revert the optimistic UI update if the backend call fails
       setTodos(
         todos.map((todo) =>
           todo.id === todoId ? { ...todo, isChecked: !todo.isChecked } : todo
@@ -120,7 +118,7 @@ const TodoList = () => {
       setAddTask(false);
     }
     if (user) {
-      await fetchTodos(); // Refetch todos after save
+      await fetchTodos(); 
     }
   };
 
@@ -130,7 +128,7 @@ const TodoList = () => {
       setAddTask(false);
     }
     if (user) {
-      await fetchTodos(); // Refetch todos on exit without saving
+      await fetchTodos(); 
     }
   };
 
@@ -138,7 +136,7 @@ const TodoList = () => {
     const fetchAverageCompletionTime = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/users/${user.id}/average-completion-time`
+          `http://34.125.43.215:8000/users/${user.id}/average-completion-time`
         );
         setAverageCompletionTime(response.data); // Assumes the endpoint returns a number
       } catch (error) {

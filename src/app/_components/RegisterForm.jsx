@@ -4,24 +4,24 @@ import React, { useState } from "react";
 const RegisterForm = ({ onRegistrationSuccess }) => {
   const [error, setError] = useState("");
 
-  const [isSuccessful, setIsSuccessful] = useState(false); // To track registration success
+  const [isSuccessful, setIsSuccessful] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const userData = Object.fromEntries(formData.entries());
-    setError(""); // Clear any existing errors
+    setError(""); 
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/users/",
+        "http://34.125.43.215:8000/users/",
         userData
       );
       console.log("Registration Successful:", response.data);
-      setIsSuccessful(true); // Set successful state to true
+      setIsSuccessful(true); 
       setTimeout(() => {
-        onRegistrationSuccess(userData); // Pass userData for direct login
-      }, 2000); // Proceed to login after showing success message for a short time
+        onRegistrationSuccess(userData); 
+      }, 2000); 
     } catch (error) {
       if (error.response) {
         setError(`Registration failed: ${error.response.data.detail}`);

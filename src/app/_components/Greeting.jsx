@@ -1,45 +1,44 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import format from "date-fns/format";
-import { useAuth } from "./AuthContext"; // Assuming you have AuthContext set up
-import { useRouter } from "next/router"; // Import useRouter for redirection
-import axios from "axios"; // Import Axios
+import { useAuth } from "./AuthContext";
+import { useRouter } from "next/router"; 
+import axios from "axios"; 
 import { RiLogoutBoxRFill } from "react-icons/ri";
 
 
 const Greeting = () => {
-  const { user, logout } = useAuth(); // Get user from context
-  const router = useRouter(); // Instantiate the router for redirection
+  const { user, logout } = useAuth();
+  const router = useRouter(); 
   const [name, setName] = useState("User");
   const [date, setDate] = useState("");
-  const [quote, setQuote] = useState(""); // State to hold the quote
-  const [author, setAuthor] = useState(""); // State to hold the author
+  const [quote, setQuote] = useState(""); 
+  const [author, setAuthor] = useState(""); 
   useEffect(() => {
     if (!user) {
-      // If there is no user in the context, redirect to login
-      router.push("/auth"); // Adjust the path as needed
+     
+      router.push("/auth"); 
     } else if (user.name) {
-      setName(user.name); // Set name from user context
+      setName(user.name); 
     }
-    // Fetch a random quote
     axios
       .get("https://api.quotable.io/random")
       .then((response) => {
-        setQuote(response.data.content); // Set the quote text
-        setAuthor(response.data.author); // Set the quote author
+        setQuote(response.data.content);
+        setAuthor(response.data.author); 
       })
       .catch((error) => console.error("Error fetching quote:", error));
 
     const today = format(new Date(), "PPPP");
     setDate(today);
-  }, [user, router]); // Include router in the dependency array
+  }, [user, router]); 
 
-  // Render nothing if there is no user
+  
   if (!user) return null;
   return (
     <div>
       <button
-        onClick={logout} // Attach logout function to button
+        onClick={logout} 
         className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-2xl cursor-pointer text-green-800 bg-white rounded-full shadow-lg transition-colors"
         style={{ zIndex: 1 }}
       >

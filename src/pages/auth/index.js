@@ -7,7 +7,6 @@ import RegisterForm from "@/components/RegisterForm";
 const AuthForm = () => {
   const [isRegistering, setIsRegistering] = useState(true);
 
-  // Function to switch to login
   const handleRegistrationSuccess = () => {
     setIsRegistering(false);
   };
@@ -18,10 +17,10 @@ const AuthForm = () => {
           <Image
             src="/logopromo.webp"
             layout="fixed"
-            width={400} // Increased size
-            height={400} // Maintain aspect ratio
+            width={400} 
+            height={400} 
             alt="Promo Image"
-            className="bg-[#f4e9da]" // White background
+            className="bg-[#f4e9da]" 
           />
         </div>
 
