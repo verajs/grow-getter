@@ -4,9 +4,11 @@ import format from "date-fns/format";
 import { useAuth } from "./AuthContext"; // Assuming you have AuthContext set up
 import { useRouter } from "next/router"; // Import useRouter for redirection
 import axios from "axios"; // Import Axios
+import { RiLogoutBoxRFill } from "react-icons/ri";
+
 
 const Greeting = () => {
-  const { user } = useAuth(); // Get user from context
+  const { user, logout } = useAuth(); // Get user from context
   const router = useRouter(); // Instantiate the router for redirection
   const [name, setName] = useState("User");
   const [date, setDate] = useState("");
@@ -35,11 +37,20 @@ const Greeting = () => {
   // Render nothing if there is no user
   if (!user) return null;
   return (
-    <div className="absolute top-0 left-0 p-5">
-      <h1 className="text-2xl font-light text-black">Hello {name}</h1>
-      <p className="text-lg font-normal pb-8 text-black">{date}</p>
-      <p className="text-lg italic text-gray-600">{quote} </p>
-      <p className="text-lg text-gray-600">{author}</p>
+    <div>
+      <button
+        onClick={logout} // Attach logout function to button
+        className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-2xl cursor-pointer text-green-800 bg-white rounded-full shadow-lg transition-colors"
+        style={{ zIndex: 1 }}
+      >
+        <RiLogoutBoxRFill />
+      </button>
+      <div className="absolute top-0 left-0 p-5">
+        <h1 className="text-2xl font-light text-black">Hello {name}</h1>
+        <p className="text-lg font-normal pb-8 text-black">{date}</p>
+        <p className="text-lg italic text-gray-600">{quote} </p>
+        <p className="text-lg text-gray-600">{author}</p>
+      </div>
     </div>
   );
 };

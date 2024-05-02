@@ -4,9 +4,14 @@ import Greeting from "../../app/_components/Greeting";
 import { LuListTodo } from "react-icons/lu";
 import "../../app/globals.css";
 import { useState, useEffect } from "react";
+import { useAuth } from "../../app/_components/AuthContext"; // Assuming you have AuthContext set up
+
 import Overlay from "@/components/Overlay";
 export default function Home() {
+  const { user } = useAuth(); // Get user from context
+
   const [showOverlay, setShowOverlay] = useState(false);
+  const [tree, setTree] = useState(null); // Initialize tree state to null
 
   const openOverlay = () => {
     setShowOverlay(true);
@@ -16,6 +21,13 @@ export default function Home() {
     setShowOverlay(false);
   };
 
+  useEffect(() => {
+    // Check if there are trees and set the first one
+    if (user && user.trees && user.trees.length > 0) {
+      setTree(user.trees[0]); // Safely set the first tree, if it exists
+    }
+  }, [user]); // Depend on the user object to refetch when it changes
+
   return (
     <div className="relative w-full h-screen bg-[#f4e9da] flex items-end justify-center">
       {/* Circle positioned behind everything else with a lower z-index */}
@@ -23,9 +35,9 @@ export default function Home() {
         <div className="w-[50vw] h-[50vw] max-w-[60%] max-h-[60%] bg-white rounded-full"></div>
       </div> */}
 
-      <div className="w-1/4 max-w-[300px] z-10">
+      <div className="w-1/4 max-w-[200px] z-10">
         <Image
-          src="/plant1.png"
+          src={`/plant${tree ? tree.stage : 1}.png`}
           layout="responsive"
           width={100}
           height={100}
@@ -42,7 +54,10 @@ export default function Home() {
           <LuListTodo />
         </button>
         <div className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-md">
-          <span className="text-sm text-green-600 font-semibold">1/5</span>
+          <span className="text-sm text-green-600 font-semibold">
+            {tree ? `${tree.stage}/5` : "Loading..."}
+          </span>{" "}
+          {/* Dynamic stage indicator */}
         </div>
       </div>
       <Overlay onClose={closeOverlay} show={showOverlay} />
