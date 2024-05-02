@@ -59,7 +59,7 @@ const LoginForm = () => {
         <div className="mt-6">
           <label
             htmlFor="username"
-            className="block mb-2 text-sm text-gray-300"
+            className="block mb-2 text-sm text-gray-500"
           >
             Username
           </label>
@@ -73,7 +73,7 @@ const LoginForm = () => {
         </div>
 
         <div className="mt-6">
-          <label htmlFor="password" className="text-sm text-gray-300">
+          <label htmlFor="password" className="text-sm text-gray-500">
             Password
           </label>
           <input

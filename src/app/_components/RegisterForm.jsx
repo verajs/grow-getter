@@ -4,6 +4,8 @@ import React, { useState } from "react";
 const RegisterForm = ({ onRegistrationSuccess }) => {
   const [error, setError] = useState("");
 
+  const [isSuccessful, setIsSuccessful] = useState(false); // To track registration success
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -16,7 +18,10 @@ const RegisterForm = ({ onRegistrationSuccess }) => {
         userData
       );
       console.log("Registration Successful:", response.data);
-      onRegistrationSuccess(); // Callback on successful registration
+      setIsSuccessful(true); // Set successful state to true
+      setTimeout(() => {
+        onRegistrationSuccess(userData); // Pass userData for direct login
+      }, 2000); // Proceed to login after showing success message for a short time
     } catch (error) {
       if (error.response) {
         setError(`Registration failed: ${error.response.data.detail}`);
@@ -35,7 +40,7 @@ const RegisterForm = ({ onRegistrationSuccess }) => {
     <div className="mt-8">
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="name" className="block mb-2 text-sm text-gray-300">
+          <label htmlFor="name" className="block mb-2 text-sm text-gray-500">
             Name(s)
           </label>
           <input
@@ -50,7 +55,7 @@ const RegisterForm = ({ onRegistrationSuccess }) => {
         <div className="mt-6">
           <label
             htmlFor="username"
-            className="block mb-2 text-sm text-gray-300"
+            className="block mb-2 text-sm text-gray-500"
           >
             Choose your username
           </label>
@@ -64,7 +69,7 @@ const RegisterForm = ({ onRegistrationSuccess }) => {
         </div>
 
         <div className="mt-6">
-          <label htmlFor="email" className="block mb-2 text-sm text-gray-300">
+          <label htmlFor="email" className="block mb-2 text-sm text-gray-500">
             Email Address
           </label>
           <input
@@ -77,7 +82,7 @@ const RegisterForm = ({ onRegistrationSuccess }) => {
         </div>
 
         <div className="mt-6">
-          <label htmlFor="password" className="text-sm text-gray-300">
+          <label htmlFor="password" className="text-sm text-gray-500">
             Password
           </label>
           <input
@@ -91,6 +96,9 @@ const RegisterForm = ({ onRegistrationSuccess }) => {
 
         <div className="mt-6">
           {error && <p className="text-black">{error}</p>}
+          {isSuccessful && (
+            <div className="text-black  py-4">Registration successful!</div>
+          )}
 
           <button
             type="submit"
