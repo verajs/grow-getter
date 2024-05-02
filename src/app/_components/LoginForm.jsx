@@ -17,15 +17,29 @@ const LoginForm = () => {
     };
 
     try {
+      // Step 1: Request a token
       const response = await axios.post(
         "http://127.0.0.1:8000/token/",
         loginData,
-        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
       );
-      console.log("Response received:", response.data);
-      // Utilize the updated login function that uses local storage
+      console.log("Token received:", response.data);
+
+      // Step 2: Check and reset todos
+      const userId = response.data.user.id; // Assuming the user ID is returned here
+      const checkResponse = await axios.get(
+        `http://127.0.0.1:8000/users/${userId}/todos/check_reset`,
+        {
+          headers: { Authorization: `Bearer ${response.data.access_token}` },
+        }
+      );
+      console.log("Todos check and reset:", checkResponse.data);
+
+      // Step 3: Proceed with login
       login({ user: response.data.user, token: response.data.access_token });
-      console.log("Login successful:", response.data);
+      console.log("Login successful:", response.data.user);
       router.push("/homepage");
     } catch (error) {
       console.log("Error object:", error);
@@ -34,9 +48,6 @@ const LoginForm = () => {
             error.response.data.detail || "Please check your credentials."
           }`
         : "Login failed: Server not responding.";
-      // put popup on screen to say wrong credentials
-      
-
       setError(errorMessage);
       console.error(errorMessage);
     }
@@ -81,9 +92,7 @@ const LoginForm = () => {
           >
             Log In
           </button>
-          <div className="text-black text-lg ">
-          {error && <p>{error}</p>}
-          </div>
+          <div className="text-black text-lg ">{error && <p>{error}</p>}</div>
         </div>
       </form>
     </div>

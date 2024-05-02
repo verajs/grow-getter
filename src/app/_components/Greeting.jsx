@@ -46,7 +46,7 @@ const Greeting = () => {
         <RiLogoutBoxRFill />
       </button>
       <div className="absolute top-0 left-0 p-5">
-        <h1 className="text-2xl font-light text-black">Hello {name}</h1>
+        <h1 className="text-3xl text-bold text-black">Hello {name}</h1>
         <p className="text-lg font-normal pb-8 text-black">{date}</p>
         <p className="text-lg italic text-gray-600">{quote} </p>
         <p className="text-lg text-gray-600">{author}</p>

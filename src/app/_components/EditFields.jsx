@@ -5,6 +5,29 @@ import { IoTrashOutline } from "react-icons/io5";
 const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
   const [editText, setEditText] = useState(task.title || "");
   const [description, setDescription] = useState(task.description || "");
+  const [averageTimeSpent, setAverageTimeSpent] = useState("N/A"); // State to store average time spent
+
+  useEffect(() => {
+    // Function to fetch the average time spent
+    const fetchAverageTime = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/users/${userId}/todos/${todoId}/completion-time`
+        );
+        if (response.data === null) {
+          setAverageTimeSpent("N/A"); // Set to N/A if there is no data
+          return;
+        }
+
+        setAverageTimeSpent(response.data); // Set the fetched time
+      } catch (error) {
+        console.error("Failed to fetch completion time", error);
+        setAverageTimeSpent("N/A"); // Set to N/A if there is an error
+      }
+    };
+
+    fetchAverageTime();
+  }, [userId, todoId]); // Depend on userId and todoId to refetch if they change
 
   // Function to create initial daysActive state from task.days_active
   const createInitialDaysActive = (activeDays) => {
@@ -88,6 +111,10 @@ const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
         />
 
         <div className="mt-4">
+          <div className="text-left text-black text-sm my-4">
+            Average Hours This Takes:{" "}
+            {averageTimeSpent !== null ? `${averageTimeSpent}` : "Loading..."}
+          </div>
           <div className="text-left text-black text-sm pt-4">
             On Which Days?
           </div>

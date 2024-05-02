@@ -14,11 +14,19 @@ const TodoList = () => {
   const { user } = useAuth();
   const [todos, setTodos] = useState([]);
   const [currentDayTodos, setCurrentDayTodos] = useState([]);
+  const [completedTodos, setCompletedTodos] = useState(0); // Initialize with user's completed todos
+  const [averageCompletionTime, setAverageCompletionTime] = useState(null);
   const [otherDayTodos, setOtherDayTodos] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [addTask, setAddTask] = useState(false);
   const [editText, setEditText] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setCompletedTodos(user.completed_todos);
+    }
+  }, [user]);
   const fetchTodos = async () => {
     try {
       const response = await axios.get(
@@ -37,9 +45,14 @@ const TodoList = () => {
         const response = await axios.get(
           `http://127.0.0.1:8000/users/${user.id}/todos`
         );
-        setTodos(
-          response.data.map((todo) => ({ ...todo, isChecked: todo.completed }))
-        );
+        const fetchedTodos = response.data.map((todo) => ({
+          ...todo,
+          isChecked: todo.completed,
+        }));
+        setTodos(fetchedTodos);
+        if (fetchedTodos.length === 0) {
+          setAddTask(true); // Automatically open AddTask if no todos
+        }
       } catch (error) {
         console.error("Error fetching todos:", error);
       }
@@ -121,56 +134,45 @@ const TodoList = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchAverageCompletionTime = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/users/${user.id}/average-completion-time`
+        );
+        setAverageCompletionTime(response.data); // Assumes the endpoint returns a number
+      } catch (error) {
+        console.error("Error fetching average completion time:", error);
+        setAverageCompletionTime(null); // Handle errors or non-existent data
+      }
+    };
+    if (user) {
+      setCompletedTodos(user.completed_todos);
+      fetchAverageCompletionTime();
+    }
+  }, [user]);
+
   return (
-    <div className="bg-transparent rounded-xl shadow-md mx-auto w-full p-4">
+    <div className="bg-white rounded-xl shadow-md mx-auto w-full p-4">
       <button
         onClick={setaddTask}
-        className="absolute top-6 left-6 w-12 h-12 flex items-center justify-center text-2xl cursor-pointer text-green-800 bg-white rounded-full shadow-lg transition-colors"
+        className="absolute top-6 left-6 w-12 h-12 flex items-center justify-center text-2xl cursor-pointer text-green-800 bg-white rounded-full shadow-lg hover:bg-green-100"
       >
         <FaPlus />
       </button>
 
-      <ul>
-        <h1 className="text-black text-2xl p-4">Opportunities of today</h1>
-        {currentDayTodos.map((todo) => (
-          <li
-            key={todo.created_date}
-            className="flex justify-between text-black p-3 rounded-full shadow mb-2 text-lg"
-            style={{ minWidth: "90%", maxWidth: "100%" }}
-          >
-            <div className="flex">
-              <button
-                className="text-green-800 hover:text-green-800"
-                onClick={() => toggleCheckbox(todo.id)}
-              >
-                {todo.isChecked ? (
-                  <RiCheckboxCircleLine />
-                ) : (
-                  <RiCheckboxBlankCircleLine />
-                )}
-              </button>
-
-              <span className="ml-2 text-base">{todo.title}</span>
-            </div>
-            <button
-              className="text-green-800 hover:text-green-800"
-              onClick={() => handleEditClick(todo)}
-            >
-              <RiEdit2Fill />
-            </button>
-          </li>
-        ))}
-        <ul>
-          <h1 className="text-black text-2xl p-4">Future Opportunities</h1>
-          {otherDayTodos.map((todo) => (
+      <div className="space-y-4">
+        <h1 className="text-black text-3xl">Welcome!</h1>
+        <h1 className="text-black text-2xl">Opportunities of today</h1>
+        {currentDayTodos.length > 0 ? (
+          currentDayTodos.map((todo) => (
             <li
               key={todo.created_date}
-              className="flex justify-between text-black p-3 rounded-full shadow mb-2 text-lg"
-              style={{ minWidth: "90%", maxWidth: "100%" }}
+              className="flex justify-between items-center text-black p-3 rounded-lg shadow mb-2 text-lg"
             >
-              <div className="flex">
+              <div className="flex items-center">
                 <button
-                  className="text-green-800 hover:text-green-800"
+                  className="text-green-800 hover:text-green-600"
                   onClick={() => toggleCheckbox(todo.id)}
                 >
                   {todo.isChecked ? (
@@ -179,36 +181,79 @@ const TodoList = () => {
                     <RiCheckboxBlankCircleLine />
                   )}
                 </button>
-
                 <span className="ml-2 text-base">{todo.title}</span>
               </div>
               <button
-                className="text-green-800 hover:text-green-800"
+                className="text-green-800 hover:text-green-600"
                 onClick={() => handleEditClick(todo)}
               >
                 <RiEdit2Fill />
               </button>
             </li>
-          ))}
-        </ul>
-        {isModalOpen && currentTask && (
-          <EditFields
-            text={currentTask.title}
-            onSave={handleSaveEdit}
-            onExit={handleExit}
-            todoId={currentTask.id}
-            userId={user.id}
-            task={currentTask}
-          />
+          ))
+        ) : (
+          <p className="text-gray-500 italic">
+            No tasks for today. Click on the "+" to add new tasks.
+          </p>
         )}
-        {addTask && (
-          <AddTask
-            userId={user.id}
-            onExit={handleExit}
-            onSave={handleSaveEdit}
-          />
+        <h1 className="text-black text-2xl">Future Opportunities</h1>
+        {otherDayTodos.length > 0 ? (
+          otherDayTodos.map((todo) => (
+            <li
+              key={todo.created_date}
+              className="flex justify-between items-center text-black p-3 rounded-lg shadow mb-2 text-lg"
+            >
+              <div className="flex items-center">
+                <button
+                  className="text-green-800 hover:text-green-600"
+                  onClick={() => toggleCheckbox(todo.id)}
+                >
+                  {todo.isChecked ? (
+                    <RiCheckboxCircleLine />
+                  ) : (
+                    <RiCheckboxBlankCircleLine />
+                  )}
+                </button>
+                <span className="ml-2 text-base">{todo.title}</span>
+              </div>
+              <button
+                className="text-green-800 hover:text-green-600"
+                onClick={() => handleEditClick(todo)}
+              >
+                <RiEdit2Fill />
+              </button>
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-500 italic">No upcoming tasks. Plan ahead!</p>
         )}
-      </ul>
+      </div>
+      {isModalOpen && currentTask && (
+        <EditFields
+          text={currentTask.title}
+          onSave={handleSaveEdit}
+          onExit={handleExit}
+          todoId={currentTask.id}
+          userId={user.id}
+          task={currentTask}
+        />
+      )}
+      {addTask && (
+        <AddTask userId={user.id} onExit={handleExit} onSave={handleSaveEdit} />
+      )}
+      <h1 className="text-black text-base pt-10">
+        The average time it takes you to complete a task from the moment you
+        create it is:{" "}
+        {averageCompletionTime ? `${averageCompletionTime} hours` : "N/A"}
+      </h1>
+      <h1 className="text-black text-base">
+        Todos completed so far: {completedTodos}
+      </h1>
+      <p className="text-gray-700 italic text-xs">
+        For non N/A analytics, at least two completions are necessary, and a
+        task is considered completed and included in your score after a full day
+        has elapsed without it being deselected.
+      </p>
     </div>
   );
 };
