@@ -27,7 +27,7 @@ const AddTask = ({ userId, onSave, onExit }) => {
 
     try {
       const response = await axios.post(
-        `http://34.125.43.215:8000/users/${userId}/todos`,
+        `https://sellermation.com/users/${userId}/todos`,
         {
           title: newTitle,
           description,

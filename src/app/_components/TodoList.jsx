@@ -30,7 +30,7 @@ const TodoList = () => {
   const fetchTodos = async () => {
     try {
       const response = await axios.get(
-        `http://34.125.43.215:8000/users/${user.id}/todos`
+        `https://sellermation.com/users/${user.id}/todos`
       );
       setTodos(
         response.data.map((todo) => ({ ...todo, isChecked: todo.completed }))
@@ -43,7 +43,7 @@ const TodoList = () => {
     const fetchTodos = async () => {
       try {
         const response = await axios.get(
-          `http://34.125.43.215:8000/users/${user.id}/todos`
+          `https://sellermation.com/users/${user.id}/todos`
         );
         const fetchedTodos = response.data.map((todo) => ({
           ...todo,
@@ -98,7 +98,7 @@ const TodoList = () => {
 
     try {
       const response = await axios.patch(
-        `http://34.125.43.215:8000/users/${user.id}/todos/${todoId}/complete`
+        `https://sellermation.com/users/${user.id}/todos/${todoId}/complete`
       );
       console.log("Todo updated:", response.data);
     } catch (error) {
@@ -136,7 +136,7 @@ const TodoList = () => {
     const fetchAverageCompletionTime = async () => {
       try {
         const response = await axios.get(
-          `http://34.125.43.215:8000/users/${user.id}/average-completion-time`
+          `https://sellermation.com/users/${user.id}/average-completion-time`
         );
         setAverageCompletionTime(response.data); // Assumes the endpoint returns a number
       } catch (error) {

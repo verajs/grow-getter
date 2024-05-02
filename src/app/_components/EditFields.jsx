@@ -11,7 +11,7 @@ const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
     const fetchAverageTime = async () => {
       try {
         const response = await axios.get(
-          `http://34.125.43.215:8000/users/${userId}/todos/${todoId}/completion-time`
+          `https://sellermation.com/users/${userId}/todos/${todoId}/completion-time`
         );
         if (response.data === null) {
           setAverageTimeSpent("N/A");
@@ -77,7 +77,7 @@ const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
 
     try {
       const response = await axios.put(
-        `http://34.125.43.215:8000/users/${userId}/todos/${todoId}`,
+        `https://sellermation.com/users/${userId}/todos/${todoId}`,
         {
           title: editText,
           description,
@@ -92,7 +92,7 @@ const EditFields = ({ userId, todoId, onSave, task, onExit }) => {
   const handleDeleteTodo = async () => {
     try {
       await axios.delete(
-        `http://34.125.43.215:8000/users/${userId}/todos/${todoId}`
+        `https://sellermation.com/users/${userId}/todos/${todoId}`
       );
       onExit();
     } catch (error) {

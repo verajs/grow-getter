@@ -14,7 +14,7 @@ const RegisterForm = ({ onRegistrationSuccess }) => {
 
     try {
       const response = await axios.post(
-        "http://34.125.43.215:8000/users/",
+        "https://sellermation.com/users/",
         userData
       );
       console.log("Registration Successful:", response.data);

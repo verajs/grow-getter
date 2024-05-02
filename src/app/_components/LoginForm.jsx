@@ -19,7 +19,7 @@ const LoginForm = () => {
     try {
       // Step 1: Request a token
       const response = await axios.post(
-        "http://34.125.43.215:8000/token/",
+        "https://sellermation.com/token/",
         loginData,
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -30,7 +30,7 @@ const LoginForm = () => {
       // Step 2: Check and reset todos
       const userId = response.data.user.id; // Assuming the user ID is returned here
       const checkResponse = await axios.get(
-        `http://34.125.43.215:8000/users/${userId}/todos/check_reset`,
+        `https://sellermation.com/users/${userId}/todos/check_reset`,
         {
           headers: { Authorization: `Bearer ${response.data.access_token}` },
         }
