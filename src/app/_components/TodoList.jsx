@@ -193,7 +193,7 @@ const TodoList = () => {
           ))
         ) : (
           <p className="text-gray-500 italic">
-            No tasks for today. Click on the "+" to add new tasks.
+            No tasks for today. Click on the &quot;+&quot; to add new tasks.
           </p>
         )}
         <h1 className="text-black text-2xl">Future Opportunities</h1>
